@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Comment
+from .models import Category, Product, Comment, Attribute, AttributeKey, AttributeValue
 
 
 
@@ -23,3 +23,18 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('product', 'owner', 'created_at')
     search_fields = ('content',)
 
+
+
+@admin.register(Attribute)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('attribute_key', 'attribute_value', 'product')
+
+
+@admin.register(AttributeKey)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('key_name',)
+
+
+@admin.register(AttributeValue)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('value_name',)

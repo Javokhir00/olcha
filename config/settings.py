@@ -14,8 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-import dj_database_url
-from decouple import config
+
 
 load_dotenv()
 
@@ -106,21 +105,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
+import dj_database_url
+from decouple import config
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
-        }
+        'default': dj_database_url.config(os.environ.get('DATABASE_URL'))
     }
 
 
-POSTGRES_LOCALLY = False
+
+POSTGRES_LOCALLY = True
 ENVIRONMENT = config('ENVIRONMENT', default='development')
 
 if ENVIRONMENT == 'production' or POSTGRES_LOCALLY:
@@ -167,14 +161,23 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR, "media"
 
 
 STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                        "location": BASE_DIR / "media",
+                        },
+        },
+
         "staticfiles": {
             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
@@ -217,3 +220,10 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://web-production-fc3b1.up.railway.app/olcha/",
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

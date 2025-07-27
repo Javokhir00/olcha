@@ -42,6 +42,16 @@ class AttributeSerializer(serializers.ModelSerializer):
         model = Attribute
         fields = '__all__'
 
+    def create(self, validated_data):
+        key_data = validated_data.pop('attribute_key')
+        value_data = validated_data.pop('attribute_value')
+
+        key = AttributeKey.objects.create(**key_data)
+        value = AttributeValue.objects.create(**value_data)
+
+        return Attribute.objects.create(attribute_key=key, attribute_value=value, **validated_data)
+
+
 
 
 class ProductSerializer(serializers.ModelSerializer):
